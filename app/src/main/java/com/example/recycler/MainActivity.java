@@ -1,91 +1,59 @@
 package com.example.recycler;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
+
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.Window;
+
+import com.example.recycler.adapters.CategoryAdapter;
+import com.example.recycler.adapters.ViewPageAdapter;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 public class MainActivity extends AppCompatActivity {
-    private EditText txtUsername;
-    private EditText txtPassword;
-    private Button btnLogin;
-    private TextView txtChange;
-    private TextView txtTilteFooter;
-    private TextView txtForgotPassword;
-    private ImageView imgQuestion;
+    private RecyclerView rcvCategory;
+    private CategoryAdapter adapter;
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager;
+    private FragmentStateAdapter fragmentStateAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Window window = MainActivity.this.getWindow();
 
-        window.setStatusBarColor(ContextCompat.getColor(MainActivity.this, R.color.facebookColor));
+        window.setStatusBarColor(ContextCompat.getColor(MainActivity.this, R.color.background));
 
+        getSupportActionBar().setTitle("Shop");
         setContentView(R.layout.activity_main);
 
-        txtUsername = findViewById(R.id.edTxtUername);
-        txtPassword = findViewById(R.id.edTxtPassword);
-        btnLogin = findViewById(R.id.btnLogin);
-        txtChange = findViewById(R.id.txtChange);
-        txtTilteFooter = findViewById(R.id.txtTilteFooter);
-        txtForgotPassword = findViewById(R.id.txtForgotPassword);
-        txtTilteFooter = findViewById(R.id.txtTilteFooter);
-        txtForgotPassword = findViewById(R.id.txtForgotPassword);
-        imgQuestion = findViewById(R.id.imgQuestion);
+        tabLayout = findViewById(R.id.tabLayout);
+        viewPager = findViewById(R.id.view_Pager);
+        ViewPageAdapter viewPagerAdapter = new ViewPageAdapter(this);
+        viewPager.setAdapter(viewPagerAdapter);
 
-
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (txtUsername.getText().toString().trim().isEmpty()){
-                    txtUsername.setError("Username is not blank!");
-                }
-                if(txtPassword.getText().toString().trim().isEmpty()){
-                    txtPassword.setError("Password is not blank!");
-                }
-                if (txtUsername.getText().toString().equals("admin") && txtPassword.getText().toString().equals("123456")) {
-                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                    intent.putExtra("username", txtUsername.getText().toString());
-                    intent.putExtra("password", txtPassword.getText().toString());
-                    startActivity(intent);
-                }
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            switch (position){
+                case 0:
+                    tab.setText("FEATURED");
+                    break;
+                case 1:
+                    tab.setText("DEALS");
+                    break;
+                case 2:
+                    tab.setText("CATEGORIES");
+                    break;
             }
-        });
+        }).attach();
+    }
 
-        txtChange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "This feature does not support now", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        txtTilteFooter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "This feature does not support now", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        txtForgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "This feature does not support now", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        imgQuestion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "This feature does not support now", Toast.LENGTH_LONG).show();
-            }
-        });
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_item,menu);
+        return true;
     }
 }
