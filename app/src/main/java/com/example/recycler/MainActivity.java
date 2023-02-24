@@ -1,54 +1,42 @@
 package com.example.recycler;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.Window;
+import android.widget.Toast;
 
-import com.example.recycler.adapters.CategoryAdapter;
-import com.example.recycler.adapters.ViewPageAdapter;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
+import com.example.recycler.adapters.ItemAdapter;
+import com.example.recycler.models.Item;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private RecyclerView rcvCategory;
-    private CategoryAdapter adapter;
-    private TabLayout tabLayout;
-    private ViewPager2 viewPager;
-    private FragmentStateAdapter fragmentStateAdapter;
+    private static final int REQUEST_PERMISSION_CODE = 1000;
+    private RecyclerView rcvItem;
+    private ItemAdapter mAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Window window = MainActivity.this.getWindow();
+        setContentView(R.layout.activity_home);
 
-        window.setStatusBarColor(ContextCompat.getColor(MainActivity.this, R.color.background));
+        rcvItem = findViewById(R.id.rcv_item);
+        mAdapter = new ItemAdapter(this, getListItem());
 
-        getSupportActionBar().setTitle("Shop");
-        setContentView(R.layout.activity_main);
+        rcvItem.setAdapter(mAdapter);
 
-        tabLayout = findViewById(R.id.tabLayout);
-        viewPager = findViewById(R.id.view_Pager);
-        ViewPageAdapter viewPagerAdapter = new ViewPageAdapter(this);
-        viewPager.setAdapter(viewPagerAdapter);
+        mAdapter.notifyDataSetChanged();
+        rcvItem.setHasFixedSize(true);
+        rcvItem.setLayoutManager(new GridLayoutManager(this, 3));
 
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            switch (position){
-                case 0:
-                    tab.setText("FEATURED");
-                    break;
-                case 1:
-                    tab.setText("DEALS");
-                    break;
-                case 2:
-                    tab.setText("CATEGORIES");
-                    break;
-            }
-        }).attach();
+        getCallPhonePermission();
     }
 
     @Override
@@ -56,4 +44,56 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_item,menu);
         return true;
     }
-}
+
+    private static ArrayList<Item> getListItem() {
+        ArrayList<Item> items = new ArrayList<>();
+
+        items.add(new Item(R.drawable.ic_pharmacy, "Pharmacy"));
+        items.add(new Item(R.drawable.ic_taxi, "Taxi"));
+        items.add(new Item(R.drawable.ic_registry, "Registry"));
+        items.add(new Item(R.drawable.ic_patiogarden, "Garden"));
+        items.add(new Item(R.drawable.ic_laptop, "Laptop"));
+        items.add(new Item(R.drawable.ic_cartwheel, "Cartwheel"));
+        items.add(new Item(R.drawable.ic_clothes, "Cloth"));
+        items.add(new Item(R.drawable.ic_accessories, "Accessories"));
+        items.add(new Item(R.drawable.ic_baby, "Baby"));
+        items.add(new Item(R.drawable.ic_baby, "Home"));
+        items.add(new Item(R.drawable.ic_shoes, "Shoes"));
+
+
+
+
+        return items;
+    }
+
+    public void  getCallPhonePermission(){
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
+            return;
+        }
+
+        if(checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(MainActivity.this, "Granted", Toast.LENGTH_LONG).show();
+        }else{
+            if(shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)){
+
+            }
+
+            String[] permissions = {Manifest.permission.CALL_PHONE};
+            requestPermissions(permissions, REQUEST_PERMISSION_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case REQUEST_PERMISSION_CODE: {
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
+                }else{
+
+                }
+                return;
+            }
+        }
+    }}
